@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule  } from './app.module';
-import 'dotenv/config'
 import { Logger } from '@nestjs/common';
 import { initApp } from './initApp';
+
+import 'dotenv/config'
 
 async function bootstrap() {
   

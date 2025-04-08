@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "typeRoots": ["node_modules/@types"],
+    "types": ["node"],
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
