@@ -1,17 +1,19 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import helmet from "helmet";
-import * as cookieParser from 'cookie-parser';
+import { INestApplication, ValidationPipe  } from '@nestjs/common';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 
+// ...
 export async function initApp(app: INestApplication) {
         
-    //await app.enableCors({origin: 'http://localhost:5173', credentials: true,});
-    //app.useGlobalPipes(new ValidationPipe({ whitelist: true }));    
 
-    app
-        .use(helmet())
-        .use(cookieParser());
+    await app.enableCors({
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        preflightContinue: false,
+    });
 
+    //console.log(join(__dirname, '..','build'))
 
     await app.listen(process.env.PORT || 3000);    
 }

@@ -1,48 +1,25 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 import { FsModule } from './fs/fs.module';
+import { TypeOrmModule } from '@nestjs/typeorm'
+import 'dotenv/config';
 
 
-
-
-const DEFAULT_ADMIN = {
-  email: 'admin@example.com',
-  password: 'password',
-}
-
-const authenticate = async (email: string, password: string) => {
-  if (email === DEFAULT_ADMIN.email && password === DEFAULT_ADMIN.password) {
-    return Promise.resolve(DEFAULT_ADMIN)
-  }
-  return null
-}
 
 @Module({
-  imports: [
-    import('@adminjs/nestjs').then(({ AdminModule }) => AdminModule.createAdminAsync({
-      useFactory: () => ({
-        adminJsOptions: {
-          rootPath: '/admin',
-          resources: [],
-        },
-        auth: {
-          authenticate,
-          cookieName: 'adminjs',
-          cookiePassword: 'secret'
-        },
-        sessionOptions: {
-          resave: true,
-          saveUninitialized: true,
-          secret: 'secret'
-        },
-      }),
-    })),
-    FsModule
-  ],
+  imports: [TypeOrmModule.forRoot({
+    type: 'mysql',
+    host: '127.0.0.1',
+    port: 3306,
+    username: 'root',
+    password: 'qwer1234',
+    database: 'dumy',
+    // entities: [User],
+    synchronize: true, // 운영환경에서는 false로
+  })],
   controllers: [AppController],
   providers: [AppService],
 })
-  
-export class AppModule {}
+
+export class AppModule { }

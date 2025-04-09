@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node16",
     "typeRoots": ["node_modules/@types"],
     "types": ["node"],
-    "module": "commonjs",
+    "module": "Node16",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
