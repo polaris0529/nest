@@ -9,11 +9,13 @@ export async function initApp(app: INestApplication) {
 
     await app.enableCors({
         origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        preflightContinue: false,
+        // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        // preflightContinue: false,
     });
 
     //console.log(join(__dirname, '..','build'))
 
-    await app.listen(process.env.PORT || 3000);    
+    console.log(process.env.PORT);
+
+    await app.listen(8080);    
 }

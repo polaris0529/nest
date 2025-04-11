@@ -2,12 +2,16 @@ import { Controller, Get, Render, Res, All } from '@nestjs/common';
 import { Response } from 'express'
 import { join } from 'path'
 import { DataSource } from 'typeorm'
+import TitlesService from './title/title.service';
 
 
 @Controller()
 export class AppController {  
 
-  constructor(private dataSource: DataSource) { }
+  constructor(
+    private titleService: TitlesService
+    
+  ) { }
 
   @Get('/aa')
   getHello(@Res() res: Response) {
@@ -25,9 +29,13 @@ export class AppController {
   @All("/getTable")
   async getTable(@Res() res: Response) {
 
-    const result = await this.dataSource.query('SELECT * fROM resortavailability')
+    //const result = await this.dataSource.query('SELECT * fROM employees limit 50;')
+    const result = await this.titleService.findAll();
     console.log(result)
-    return res.json(result).sendStatus(200);
+    await res.json(result).sendStatus(200);
+
+
+    return res;
   }
     
 

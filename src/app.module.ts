@@ -1,25 +1,36 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FsModule } from './fs/fs.module';
 import { TypeOrmModule } from '@nestjs/typeorm'
-import 'dotenv/config';
-
-
+import { join } from 'path';
+import { TitleModule } from './title/title.module';
+import TitlesService from './title/title.service';
+import { Titles } from 'output/entities/Titles';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Config } from './config/config';
+import 'dotenv/config'
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: '127.0.0.1',
-    port: 3306,
-    username: 'root',
-    password: 'qwer1234',
-    database: 'dumy',
-    // entities: [User],
-    synchronize: true, // 운영환경에서는 false로
-  })],
+  imports: [    
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),    
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USERNAME'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DATABASES'),
+        synchronize: true,
+        entities: [join(process.cwd(), "output", "entities", "*.{ts,js}")],
+      }),
+    }),
+    TitleModule, TypeOrmModule.forFeature([Titles])],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,TitlesService],
 })
 
 export class AppModule { }
