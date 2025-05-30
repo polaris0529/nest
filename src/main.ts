@@ -2,11 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFastifyApplication, FastifyAdapter } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { join } from 'path';
+import path, { join } from 'path';
+import * as fs from 'fs/promises';
+import Handlebars from 'handlebars';
+import { registerPartials } from './utils/handlebars-partials';
 
 
 import 'dotenv/config'
 import { ConfigModule } from '@nestjs/config';
+import { readdir } from 'fs';
 
 
 async function bootstrap() {
@@ -29,9 +33,13 @@ async function bootstrap() {
     prefix: '/public/',
   });
 
+
+  registerPartials('views/common')
+
+
   app.setViewEngine({
     engine: {
-      handlebars: require('handlebars'),
+      handlebars: Handlebars,
     },
     templates: join(__dirname, '..', 'views'),
   });
