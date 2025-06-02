@@ -1,51 +1,27 @@
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { NestFactory } from '@nestjs/core';
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { NestFastifyApplication, FastifyAdapter } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import path, { join } from 'path';
-import * as fs from 'fs/promises';
-import Handlebars from 'handlebars';
-import { registerPartials } from './utils/handlebars-partials';
+import { join } from 'path';
+import helmet from "helmet";
+import hbs = require('hbs');
 
-
-import 'dotenv/config'
-import { ConfigModule } from '@nestjs/config';
-import { readdir } from 'fs';
 
 
 async function bootstrap() {
 
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule,
-    new FastifyAdapter(),
-  );
+  //registerPartials('views/common');
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'views'));
 
-  app.useStaticAssets({
-    root: join(__dirname, '..', 'public'),
-    prefix: '/public/',
-  });
-
-
-  registerPartials('views/common')
-
-
-  app.setViewEngine({
-    engine: {
-      handlebars: Handlebars,
-    },
-    templates: join(__dirname, '..', 'views'),
-  });
-
+  app.setViewEngine('hbs');
+  hbs.registerPartials(join(__dirname, '..', 'views/common'));
   
-  await app.listen(process.env.SERVER_PORT ?? 3000, '0.0.0.0');  //프록시 패스 지정할 경우 추가 적인 접근에대 한 설정을 할 필요가 있음;;
+  // app.use(helmet());
 
+  await app.listen(process.env.SERVER_PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();
+

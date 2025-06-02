@@ -1,0 +1,67 @@
+token.cok =CSJTK
+
+	<form id="form-send" method="post" action="https://psnet.skpsnm.com/covicore/sso/checkauth.jsp">
+        <input id="resultCode" name="resultCode" type="hidden" value="000000" />
+        <input id="resultMessage" name="resultMessage" type="hidden" value="성공" />
+        <input id="secureToken" name="secureToken" type="hidden" value="kqF14k+wbOXCE5gr0lJFRYBuGvVIuMY221bitOy9BtU83lT7m9WP280XeRF2A1hCMU4Oircw96S60NTSFIQ6NRnymqk5QoJNLaDMcnb4AmaxZoxW85JbcW82ktBP8235Ln95EHxzlqP2rOYeKw9DS6czQgV3/kRikFU493zPhF8=" />
+        <input id="secureSessionId" name="secureSessionId" type="hidden" value="C8C74FBE7F4058EFC412889A3A81FAF1" />
+        <input id="userId" name="userId" type="hidden" value="BP211203" />
+        <input id="agentId" name="agentId" type="hidden" value="4" />
+        <input id="code" name="code" type="hidden" value="" />
+        <input id="requestId" name="requestId" type="hidden" value="" />
+        <input id="isToken" name="isToken" type="hidden" value="Y" />
+        <input id="reTry" name="reTry" type="hidden" value="N" />
+        <input id="method" name="method" type="hidden" value="checkToken" />
+		
+		<input  type="submit" > 제출 </input>
+    </form>
+	
+
+-
+    psnm-psnet2020\smarts4j.groupware\src\main\webapp\WEB-INF\config\egovframework\springmvc\dispatcher-servlet.xml
+    psnm-psnet2020\smarts4j.covicore\src\main\webapp\WEB-INF\config\egovframework\springmvc\dispatcher-servlet.xml
+    psnm-psnet2020\smarts4j.approval\src\main\webapp\WEB-INF\config\egovframework\springmvc\dispatcher-servlet.xml
+
+```
+    <bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="localeChangeInterceptor" />
+			</list>
+		</property>
+	</bean>
+```
+
+
+```
+  <dependencies>
+    <dependency>
+        <artifactId>smarts4j.framework</artifactId>
+        <groupId>com.covision</groupId>
+    </dependency>
+    <dependency>
+        <artifactId>smarts4j.resources</artifactId>
+        <groupId>com.covision</groupId>
+    </dependency>
+```	
+
+
+document.cookie="LastVisitedPage=%2Fgroupware%2Fportal%2Fhome.do%3FCLSYS%3Dportal%26CLMD%3Duser%26CLBIZ%3DPortal%26loginState%3Dsuccess; CSJTK=qrFg8zHJGPJ/iNIBnyNU8we1hghZBAAmsn6lPacijD6rb34CmXV1Xjb+4JaqWhpKjZKk14y0zOhf+oEoVqLkfjY5hqKl6Sdw6k4fpOPzg1Kmf5u9ZbiJMoeZ770jdkxtMhKc5o5cdr/nYhTMGV/Q0vTk+qOaL1FDcYbFZ6oI0xewri0qrzvfb3thJqBY/hFgoh80HFmtXqKmOyOf5S5GCSAhH+pcS4pz1z7fNjp/ZZD6u/CNKI6YrbPKp2Zlt4MJtnyWsscUW3pOT64AtEvjzNRQaDeA/bircL6t1FMtAk9vqNj9ZKdcpKy9KMc/CucbLp7I8ScFGH36MU+gnHE3C27n7mmJMa56W0jbVPkA4h51MGt+6yyCPlWh4EdgdxYop8tzlkQRUirxm++Maw2rNj+Kg+YY8TF9kWBk2cU/F4lpQOFvO+JrIoevYuiwPTd8djWadFq6ePArPVA7KewQhPDmdKWXUwCJMOn+ndfxWl8g0XSsuAw3MOY1d2YcGoBPD4NPouz4z6pLT1GS+5POLIRGWD1vcnw2+mJt1ob86/hhnJK665TqeEefIcOoLq31o2bU5JzC8eYPb1qIZs7btHzLLIn2pHjP/IWjIAQ5beMMR/qczjLOkeZ9w3m7Sh1H; LastLoginUser=BP211203; POPUPLIMIT_PORTAL_653909=653909; {d9212865-4978-4765-91c3-e0d834a57250}=value" 
+
+```
+828
+map = tokenParserHelper.getSSOToken(decodeKey);
+String id = (String) map.get("id");
+String pw = (String) map.get("pw");
+String lang = (String) map.get("lang");
+
+JSONObject resultList = sessionSvc.checkAuthetication("SSO", id, pw, lang);
+JSONObject account = (JSONObject) resultList.get("account");
+
+session.setAttribute("USERID", account.get("UR_ID").toString());
+session.setAttribute("LOGIN", "Y");
+session.setAttribute("KEY", key);
+
+SessionCommonHelper.makeSession(account.get("UR_ID").toString(), account, isMobile, key);
+```
