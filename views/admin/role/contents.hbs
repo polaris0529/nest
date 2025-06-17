@@ -1,0 +1,18 @@
+{{> common/include}}
+
+{{#if jsFiles}}
+    {{#each jsFiles}}
+        <script src="{{this}}"></script>
+    {{/each}}
+{{/if}}
+
+{{#if cssFiles}}
+    {{#each cssFiles}}
+        <link rel="stylesheet" href={{this}}>
+    {{/each}}
+{{/if}}
+
+
+<div id="wrap" class="mx-5">
+    <table class="accordion table align-middle table-striped table-hover" id='containerAccordion'></table>
+</div>

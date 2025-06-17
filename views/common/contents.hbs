@@ -1,0 +1,25 @@
+{{> common/include}}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.6.0/prop-types.js"></script>
+
+
+{{> header}}
+
+{{#if jsFiles}}
+    {{#each jsFiles}}
+        <script src="{{this}}"></script>
+    {{/each}}
+{{/if}}
+
+{{#if cssFiles}}
+    {{#each cssFiles}}
+        <link rel="stylesheet" href={{this}}>
+    {{/each}}
+{{/if}}
+
+
+<table class="accordion table align-middle table-striped table-hover"  id='containerAccordion'></table>
+
+
+
+{{> common/footer}}
