@@ -3,6 +3,10 @@ import { Reflector } from '@nestjs/core';
 import { PrismaService } from 'src/prisma/prisma.service';
 import _ from 'lodash';
 
+import { isDummyDatabaseUrl } from '../prisma/prisma.constants';
+
+const isDbDisabled = () =>
+  process.env.SKIP_DB_CONNECT === 'true' || isDummyDatabaseUrl();
 
 @Injectable()
 export class RoleService {
@@ -22,6 +26,10 @@ export class RoleService {
     }
 
     async selectIpList(): Promise<any> {
+
+        if (isDbDisabled()) {
+            return [];
+        }
 
         let result = await this.prismaService.ip_whitelist.findMany({
             select: {
@@ -44,6 +52,10 @@ export class RoleService {
 
     async insertIp(body): Promise<any> {
 
+        if (isDbDisabled()) {
+            throw new Error('DB 비활성 상태: SKIP_DB_CONNECT=true');
+        }
+
         let result = await this.prismaService.ip_whitelist.create({
             data: {                
                 ip_address: body.ip_address,
@@ -60,6 +72,10 @@ export class RoleService {
 
 
     async selectIpUpDate(body) {
+
+        if (isDbDisabled()) {
+            throw new Error('DB 비활성 상태: SKIP_DB_CONNECT=true');
+        }
 
         let result = await this.prismaService.ip_whitelist.update({
             where: {

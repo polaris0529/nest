@@ -34,19 +34,24 @@ export class PortainerGateway implements OnGatewayConnection, OnModuleInit {
 
   /**
    * 앱 시작 시 호출됨 (onModuleInit)
-   * - 포테이너 API 호출
-   * - 첫 번째 엔드포인트 ID를 서비스에 저장
-   * - 상태 로깅 인터벌 시작
+   * - PORTAINER_TOKEN, PORTAINER_DOMAIN 이 없으면 초기화 생략 (앱은 정상 기동)
+   * - 있으면 포테이너 API 호출 후 엔드포인트 저장 및 인터벌 시작
    */
   async onModuleInit() {
-    const res = await this.portainerService.getEndpoint();
-
-    // 여러 엔드포인트가 반환될 수 있으나,
-    // 현재는 "로컬 단일 포테이너 인스턴스"만 대상으로 사용
-    const { Id } = res[0] as { Id: number };
-
-    this.portainerService.setEndpoints(Id);
-    this.startInterval();
+    const token = this.configService.get<string>('PORTAINER_TOKEN');
+    const domain = this.configService.get<string>('PORTAINER_DOMAIN');
+    if (!token || !domain) {
+      this.logger.warn('PORTAINER_TOKEN 또는 PORTAINER_DOMAIN 미설정 → Portainer 초기화 생략');
+      return;
+    }
+    try {
+      const res = await this.portainerService.getEndpoint();
+      const { Id } = res[0] as { Id: number };
+      this.portainerService.setEndpoints(Id);
+      this.startInterval();
+    } catch (err) {
+      this.logger.warn('Portainer 연동 실패, 초기화 생략', err?.message ?? err);
+    }
   }
 
   /**

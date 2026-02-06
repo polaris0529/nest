@@ -24,26 +24,29 @@ export class PortainerService implements OnModuleInit {
         return this.endpoints;
     }
 
+    private ensurePortainerConfig(): { token: string; domain: string } {
+        const token = this.configService.get<string>("PORTAINER_TOKEN");
+        const domain = this.configService.get<string>("PORTAINER_DOMAIN");
+        if (!token || !domain) {
+            throw new InternalServerErrorException(
+                'Portainer 미설정: .env에 PORTAINER_TOKEN, PORTAINER_DOMAIN 을 설정하세요.',
+            );
+        }
+        return { token, domain };
+    }
+
     async getEndpoint(): Promise<any> {
-
         try {
-
-            const PORTAINER_TOKEN: string = this.configService.getOrThrow("PORTAINER_TOKEN");
-            const PORTAINER_DOMAIN: string = this.configService.getOrThrow("PORTAINER_DOMAIN");
+            const { token: PORTAINER_TOKEN, domain: PORTAINER_DOMAIN } = this.ensurePortainerConfig();
             const res: AxiosResponse<any, any> = await axios.get(`https://${PORTAINER_DOMAIN}/api/endpoints`, { headers: { 'X-API-Key': PORTAINER_TOKEN } });
             return res.data;
-
         } catch (error) {
             throw new InternalServerErrorException(error);
         }
-
     }
 
     async getContainer(): Promise<any> {
-
-        const PORTAINER_TOKEN: string = this.configService.getOrThrow("PORTAINER_TOKEN");
-        const PORTAINER_DOMAIN: string = this.configService.getOrThrow("PORTAINER_DOMAIN");
-
+        const { token: PORTAINER_TOKEN, domain: PORTAINER_DOMAIN } = this.ensurePortainerConfig();
         const res: AxiosResponse<any, any> = await axios.get(`https://${PORTAINER_DOMAIN}/api/endpoints/${this.endpoints}/docker/containers/json?all==true`, {
             headers: {
                 'X-API-Key': PORTAINER_TOKEN
@@ -54,9 +57,7 @@ export class PortainerService implements OnModuleInit {
     }
 
     async startContainer(CONTAINER_ID: string): Promise<any> {
-
-        const PORTAINER_TOKEN: string = this.configService.getOrThrow("PORTAINER_TOKEN");
-        const PORTAINER_DOMAIN: string = this.configService.getOrThrow("PORTAINER_DOMAIN");
+        const { token: PORTAINER_TOKEN, domain: PORTAINER_DOMAIN } = this.ensurePortainerConfig();
         const REQUEST_URL: string = `https://${PORTAINER_DOMAIN}/api/endpoints/${this.endpoints}/docker/containers/${CONTAINER_ID}/start`
 
 
@@ -72,9 +73,7 @@ export class PortainerService implements OnModuleInit {
     }
 
     async stopContainer(CONTAINER_ID: string): Promise<any> {
-
-        const PORTAINER_TOKEN: string = this.configService.getOrThrow("PORTAINER_TOKEN");
-        const PORTAINER_DOMAIN: string = this.configService.getOrThrow("PORTAINER_DOMAIN");
+        const { token: PORTAINER_TOKEN, domain: PORTAINER_DOMAIN } = this.ensurePortainerConfig();
         const REQUEST_URL: string = `https://${PORTAINER_DOMAIN}/api/endpoints/${this.endpoints}/docker/containers/${CONTAINER_ID}/stop`
 
 
