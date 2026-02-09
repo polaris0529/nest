@@ -1,7 +1,15 @@
 # compiled output
 /dist
+/deploy
 /node_modules
+/server/node_modules
+/client/node_modules
 /build
+/client/dist
+/server/dist
+*.tsbuildinfo
+/client/tsconfig.tsbuildinfo
+/server/tsconfig.tsbuildinfo
 
 # Logs
 logs
